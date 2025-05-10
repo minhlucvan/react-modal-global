@@ -65,7 +65,7 @@ class ModalWindow<CustomParams = unknown> {
   public closed: boolean
 
   protected events: EventEmitter<ModalWindowEvents>
-  private deffered: Deffered<void>
+  private deffered: Deffered<any>
 
   constructor(component: ModalComponent<CustomParams>, params: Partial<ModalParams> & CustomParams) {
     this.serialized = serialize({ component, params })
@@ -92,11 +92,11 @@ class ModalWindow<CustomParams = unknown> {
    * const modal = Modal.open(PopupHello, { title: "Hello" })
    * modal.close()
    */
-  close = () => {
+  close = (value?: any) => {
     if (this.closed) return
 
     this.closed = true
-    this.deffered.resolve()
+    this.deffered.resolve(value)
 
     this.events.emit("close")
   }
@@ -109,7 +109,7 @@ class ModalWindow<CustomParams = unknown> {
    * await Modal.open(PopupHello, { title: "Hello" })
    * doAnyAction()
    */
-  then(onfulfilled?: ((value: void) => void | PromiseLike<void>) | undefined | null, onrejected?: ((reason: unknown) => void | PromiseLike<void>) | undefined | null): PromiseLike<void> {
+  then(onfulfilled?: ((value: any) => any | PromiseLike<any>) | undefined | null, onrejected?: ((reason: unknown) => any | PromiseLike<any>) | undefined | null): PromiseLike<void> {
     return this.deffered.promise.then(onfulfilled, onrejected)
   }
   /**
